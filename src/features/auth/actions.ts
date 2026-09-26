@@ -120,11 +120,16 @@ export async function forgotPasswordAction(
   if (missingSetup) return missingSetup;
 
   const supabase = await createClient();
-  await supabase.auth.resetPasswordForEmail(parsed.data.email);
+  const recoveryUrl = new URL("/auth/callback", getApplicationUrl());
+  recoveryUrl.searchParams.set("next", "/update-password");
+
+  await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo: recoveryUrl.toString(),
+  });
 
   return {
     status: "success",
-    message: "If that account exists, a six-digit recovery code is on its way.",
+    message: "If that account exists, a secure recovery link is on its way.",
   };
 }
 

@@ -144,15 +144,6 @@ export function AuthForm({ mode, action }: { mode: AuthMode; action: AuthAction 
                 Create account
               </Link>
             </>
-          ) : mode === "forgot" ? (
-            <>
-              <Link className="hover:text-foreground" href="/verify-recovery">
-                Enter recovery code
-              </Link>
-              <Link className="hover:text-foreground" href="/login">
-                Back to sign in
-              </Link>
-            </>
           ) : (
             <Link className="hover:text-foreground" href="/login">
               Back to sign in
