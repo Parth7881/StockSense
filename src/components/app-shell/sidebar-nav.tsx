@@ -19,7 +19,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             {group.items.map((item) => {
               const active = isNavigationItemActive(pathname, item.href);
               const Icon = item.icon;
-              if (item.stage > 3) {
+              if (item.stage > 6) {
                 return (
                   <li key={item.href}>
                     <div aria-disabled="true" className="flex min-h-11 cursor-not-allowed items-center gap-3 rounded-sm px-3 text-sm font-semibold text-muted-foreground/60" title={`Available in Stage ${item.stage}`}>

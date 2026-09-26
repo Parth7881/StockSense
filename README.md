@@ -2,9 +2,9 @@
 
 StockSense is a staged inventory-management web application for product stock, receipts, deliveries, internal transfers, physical-count adjustments, and an immutable movement ledger.
 
-## Stage 2 status
+## Completed P0 scope
 
-This repository contains the verified application foundation plus the Stage 2 data and authentication layer:
+This repository contains the complete verified StockSense P0 workflow:
 
 - Next.js App Router with strict TypeScript
 - Tailwind CSS v4
@@ -20,8 +20,14 @@ This repository contains the verified application foundation plus the Stage 2 da
 - repeatable seed data and pgTAP schema/security tests
 - feature-oriented folder boundaries
 - project rules in `CLAUDE.md`
-
-Product screens, inventory posting RPCs, the authenticated application shell, and dashboard are intentionally reserved for later stages.
+- responsive marketing page and authenticated blue SaaS application shell
+- truthful live dashboard KPIs
+- searchable product catalog and manager-only product creation
+- multi-warehouse and location setup
+- receipts, deliveries, internal transfers, and physical-count adjustments
+- atomic PostgreSQL document creation and stock posting RPCs
+- insufficient-stock protection and immutable completed documents
+- immutable move history with resulting balances and document references
 
 ## Requirements
 
@@ -75,3 +81,12 @@ pnpm build
 - `src/components/inventory` - stock and document UI patterns
 - `supabase/migrations` - versioned schema, RLS, views, and inventory RPCs
 - `tests/unit` and `tests/e2e` - domain and workflow verification
+
+## Demo workflow
+
+1. Create a product in **Products**.
+2. Create a ready receipt and select **Validate** to add stock.
+3. Use delivery, transfer, or adjustment screens for the remaining stock flows.
+4. Review the resulting quantity in **Products** and the immutable entries in **Move history**.
+
+Document creation and posting are separate steps. Posting runs inside one database transaction, locks the affected rows, prevents negative stock, updates balances, completes the document, and writes the ledger together.

@@ -21,9 +21,9 @@
 ## UI direction
 
 - Use one restrained, consistent multipage application shell.
-- Warm off-white canvas, white surfaces, forest-green primary actions, amber attention states, and dark ink text.
-- Use Manrope for interface copy and JetBrains Mono for SKUs, references, and quantities when Stage 3 introduces the design system.
-- Avoid purple gradients, glassmorphism, neon, oversized hero copy, excessive cards/pills, fake metrics, and decorative charts.
+- Use the approved white and pale-blue canvas, vivid blue primary actions, navy text, and semantic emerald/amber/red states.
+- Keep interface typography clean and compact; use monospace treatment for SKUs, references, and quantities.
+- Avoid purple gradients, glassmorphism, neon, excessive cards/pills, fake metrics, and decorative charts.
 - Meet WCAG AA basics: visible focus, labels, semantic status text, keyboard access, and 44 px touch targets.
 
 ## Engineering rules

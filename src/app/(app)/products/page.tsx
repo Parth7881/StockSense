@@ -1,0 +1,29 @@
+import { Boxes, Plus, Search } from "lucide-react";
+import Link from "next/link";
+
+import { FeedbackBanner } from "@/components/inventory/feedback-banner";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { createProductAction } from "@/features/products/actions";
+import { loadProducts } from "@/features/products/queries";
+
+export const metadata = { title: "Products" };
+
+const inputClass = "min-h-11 w-full rounded-lg border bg-white px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-blue-100";
+
+export default async function ProductsPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const params = await searchParams;
+  const query = typeof params.q === "string" ? params.q : "";
+  const categoryId = typeof params.category === "string" ? params.category : "";
+  const { products, categories, canManage, error } = await loadProducts(query, categoryId);
+  return <div className="space-y-6">
+    <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Inventory catalog</p><h1 className="mt-1 text-3xl font-extrabold tracking-[-0.04em]">Products</h1><p className="mt-2 text-sm text-muted-foreground">Manage SKUs, reorder rules and live availability across every location.</p></div><div className="rounded-xl border bg-white px-4 py-3 text-sm"><span className="font-bold">{products.length}</span> matching products</div></header>
+    <FeedbackBanner error={(typeof params.error === "string" ? params.error : "") || error || undefined} success={typeof params.success === "string" ? params.success : undefined} />
+    <div className="grid gap-5 xl:grid-cols-[1fr_22rem]">
+      <section className="min-w-0 rounded-xl border bg-white shadow-sm">
+        <form className="flex flex-col gap-3 border-b p-4 sm:flex-row" method="get"><label className="relative flex-1"><Search className="absolute left-3 top-3.5 size-4 text-muted-foreground" /><input className={`${inputClass} pl-9`} defaultValue={query} name="q" placeholder="Search name or SKU" /></label><select className={`${inputClass} sm:w-52`} defaultValue={categoryId} name="category"><option value="">All categories</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select><button className="min-h-11 rounded-lg bg-primary px-5 text-sm font-bold text-white" type="submit">Filter</button></form>
+        <div className="overflow-x-auto"><table className="w-full min-w-[52rem] text-left text-sm"><thead className="border-b bg-slate-50 text-xs uppercase tracking-wider text-muted-foreground"><tr><th className="px-5 py-3">Product</th><th className="px-5 py-3">Category</th><th className="px-5 py-3">Available</th><th className="px-5 py-3">Reorder at</th><th className="px-5 py-3">Status</th><th className="px-5 py-3 text-right">Action</th></tr></thead><tbody>{products.map((product) => <tr className="border-b last:border-0" key={product.id}><td className="px-5 py-4"><p className="font-bold">{product.name}</p><p className="font-mono text-xs text-muted-foreground">{product.sku}</p></td><td className="px-5 py-4 text-muted-foreground">{product.category}</td><td className="px-5 py-4 font-mono font-bold">{product.quantity.toLocaleString("en-IN")} {product.unit}</td><td className="px-5 py-4 font-mono">{product.reorderLevel.toLocaleString("en-IN")}</td><td className="px-5 py-4"><StatusBadge status={product.active ? "active" : "inactive"} /></td><td className="px-5 py-4 text-right">{canManage ? <Link className="text-xs font-bold text-primary hover:underline" href={`/products/${product.id}/edit`}>Edit</Link> : null}</td></tr>)}</tbody></table>{!products.length ? <div className="grid min-h-56 place-items-center text-center"><div><Boxes className="mx-auto size-8 text-primary" /><p className="mt-3 font-bold">No products found</p><p className="mt-1 text-sm text-muted-foreground">Change the filters or create the first matching product.</p></div></div> : null}</div>
+      </section>
+      <aside className="rounded-xl border bg-white p-5 shadow-sm"><div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-lg bg-blue-50 text-primary"><Plus className="size-5" /></span><div><h2 className="font-bold">New product</h2><p className="text-xs text-muted-foreground">Manager access required</p></div></div>{canManage ? <form action={createProductAction} className="mt-5 space-y-4"><label className="block text-xs font-bold">Product name<input className={`${inputClass} mt-2`} maxLength={160} name="name" required /></label><label className="block text-xs font-bold">SKU / code<input className={`${inputClass} mt-2 font-mono uppercase`} maxLength={40} name="sku" placeholder="STEEL-100" required /></label><label className="block text-xs font-bold">Category<select className={`${inputClass} mt-2`} name="categoryId" required><option value="">Choose category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label><div className="grid grid-cols-2 gap-3"><label className="block text-xs font-bold">Unit<input className={`${inputClass} mt-2`} name="unitOfMeasure" placeholder="kg" required /></label><label className="block text-xs font-bold">Reorder level<input className={`${inputClass} mt-2`} min="0" name="reorderLevel" step="0.001" type="number" defaultValue="0" required /></label></div><button className="min-h-11 w-full rounded-lg bg-primary px-5 text-sm font-bold text-white shadow-md shadow-blue-100" type="submit">Create product</button></form> : <p className="mt-5 rounded-lg bg-slate-50 p-4 text-sm text-muted-foreground">Warehouse staff can view stock. Ask an inventory manager to create or update products.</p>}</aside>
+    </div>
+  </div>;
+}
