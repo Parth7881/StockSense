@@ -3,19 +3,22 @@ import { describe, expect, it } from "vitest";
 
 import Home from "./page";
 
-describe("StockSense foundation page", () => {
-  it("identifies the project and its current implementation stage", async () => {
+describe("StockSense entry page", () => {
+  it("routes the user into the protected workspace", async () => {
     render(<Home />);
 
     expect(
-      await screen.findByRole("heading", { level: 1, name: "StockSense" }),
+      await screen.findByRole("heading", {
+        level: 1,
+        name: "Inventory work, without the guesswork.",
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Stage 2 data and authentication foundation is ready."),
+      screen.getByText("Inventory work, without the guesswork."),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Open authentication" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Open workspace" })).toHaveAttribute(
       "href",
-      "/login",
+      "/dashboard",
     );
   });
 });
