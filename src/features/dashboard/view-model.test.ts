@@ -7,31 +7,31 @@ describe("buildDashboardView", () => {
     expect(
       buildDashboardView({
         productCount: 0,
+        totalStock: 0,
         lowStockCount: 0,
-        pendingDocumentCount: 0,
-        movementCount: 0,
+        warehouseCount: 0,
       }),
     ).toEqual([
       { label: "Active products", value: "0", tone: "neutral" },
+      { label: "Total stock", value: "0", tone: "success" },
       { label: "Low stock", value: "0", tone: "success" },
-      { label: "Pending operations", value: "0", tone: "neutral" },
-      { label: "Movements today", value: "0", tone: "neutral" },
+      { label: "Active warehouses", value: "0", tone: "neutral" },
     ]);
   });
 
   it("marks low stock and pending work as attention states", () => {
     const view = buildDashboardView({
       productCount: 1284,
+      totalStock: 284320,
       lowStockCount: 7,
-      pendingDocumentCount: 12,
-      movementCount: 42,
+      warehouseCount: 4,
     });
 
     expect(view).toEqual([
       { label: "Active products", value: "1,284", tone: "neutral" },
+      { label: "Total stock", value: "2,84,320", tone: "success" },
       { label: "Low stock", value: "7", tone: "attention" },
-      { label: "Pending operations", value: "12", tone: "attention" },
-      { label: "Movements today", value: "42", tone: "neutral" },
+      { label: "Active warehouses", value: "4", tone: "neutral" },
     ]);
   });
 });

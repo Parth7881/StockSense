@@ -1,8 +1,8 @@
 export type DashboardCounts = {
   productCount: number;
+  totalStock: number;
   lowStockCount: number;
-  pendingDocumentCount: number;
-  movementCount: number;
+  warehouseCount: number;
 };
 
 export type KpiTone = "neutral" | "success" | "attention";
@@ -23,18 +23,18 @@ export function buildDashboardView(counts: DashboardCounts): DashboardKpi[] {
       tone: "neutral",
     },
     {
+      label: "Total stock",
+      value: numberFormatter.format(counts.totalStock),
+      tone: "success",
+    },
+    {
       label: "Low stock",
       value: numberFormatter.format(counts.lowStockCount),
       tone: counts.lowStockCount > 0 ? "attention" : "success",
     },
     {
-      label: "Pending operations",
-      value: numberFormatter.format(counts.pendingDocumentCount),
-      tone: counts.pendingDocumentCount > 0 ? "attention" : "neutral",
-    },
-    {
-      label: "Movements today",
-      value: numberFormatter.format(counts.movementCount),
+      label: "Active warehouses",
+      value: numberFormatter.format(counts.warehouseCount),
       tone: "neutral",
     },
   ];

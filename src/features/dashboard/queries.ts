@@ -23,37 +23,33 @@ type BalanceRow = {
 
 export async function loadDashboardData(): Promise<DashboardData> {
   const supabase = await createClient();
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
 
-  const [products, balances, pending, movements] = await Promise.all([
+  const [products, balances, warehouses, pending] = await Promise.all([
     supabase.from("products").select("id", { count: "exact", head: true }).eq("is_active", true),
     supabase.from("inventory_balances").select("quantity, products!inner(reorder_level, is_active)"),
+    supabase.from("warehouses").select("id", { count: "exact", head: true }).eq("is_active", true),
     supabase
       .from("inventory_documents")
       .select("id, document_number, type, status, scheduled_for")
       .in("status", ["draft", "waiting", "ready"])
       .order("created_at", { ascending: false })
       .limit(6),
-    supabase
-      .from("stock_movements")
-      .select("id", { count: "exact", head: true })
-      .gte("occurred_at", today.toISOString()),
   ]);
 
-  const firstError = products.error ?? balances.error ?? pending.error ?? movements.error;
+  const firstError = products.error ?? balances.error ?? warehouses.error ?? pending.error;
   const balanceRows = (balances.data ?? []) as unknown as BalanceRow[];
   const lowStockCount = balanceRows.filter((row) => {
     if (!row.products?.is_active) return false;
     return Number(row.quantity) <= Number(row.products.reorder_level);
   }).length;
+  const totalStock = balanceRows.reduce((total, row) => total + Number(row.quantity), 0);
 
   return {
     counts: {
       productCount: products.count ?? 0,
+      totalStock,
       lowStockCount,
-      pendingDocumentCount: pending.data?.length ?? 0,
-      movementCount: movements.count ?? 0,
+      warehouseCount: warehouses.count ?? 0,
     },
     pendingDocuments: (pending.data ?? []).map((document) => ({
       id: document.id,

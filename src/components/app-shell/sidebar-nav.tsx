@@ -35,8 +35,8 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                   <Link
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative flex min-h-11 items-center gap-3 rounded-sm px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-2 focus-visible:outline-primary",
-                      active && "bg-sidebar-accent text-sidebar-accent-foreground before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:bg-primary",
+                      "relative flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-2 focus-visible:outline-primary",
+                      active && "bg-sidebar-accent text-primary",
                     )}
                     href={item.href}
                     onClick={onNavigate}
